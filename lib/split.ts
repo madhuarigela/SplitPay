@@ -1,9 +1,18 @@
 /**
- * Splits a total rupee amount into `count` installments with paise-level accuracy.
- * Working in integer paise avoids the classic 100/3 = 33.33333... float drift;
- * any leftover paise from the division are distributed one-by-one to the first
- * installments so the sum always equals the original total exactly.
+ * Split a payment into installments that never exceed ₹1,999.
+ * Amounts are calculated in paise so the plan always sums exactly to the
+ * original amount.
  */
+export const MAX_INSTALLMENT_RUPEES = 1999;
+
+export function getRequiredInstallmentCount(totalRupees: number): number {
+  if (!Number.isFinite(totalRupees) || totalRupees <= 0) {
+    throw new RangeError("Total amount must be a positive number");
+  }
+
+  return Math.max(1, Math.ceil(totalRupees / MAX_INSTALLMENT_RUPEES));
+}
+
 export function splitAmountEqually(totalRupees: number, count: number): number[] {
   if (!Number.isFinite(totalRupees) || totalRupees <= 0) {
     throw new RangeError("Total amount must be a positive number");
@@ -23,10 +32,22 @@ export function splitAmountEqually(totalRupees: number, count: number): number[]
 }
 
 export interface InstallmentPlan {
-  index: number; // 0-based
-  amount: number; // rupees
+  index: number;
+  amount: number;
 }
 
-export function buildInstallmentPlan(totalRupees: number, count: number): InstallmentPlan[] {
-  return splitAmountEqually(totalRupees, count).map((amount, index) => ({ index, amount }));
+export function buildInstallmentPlan(totalRupees: number, count?: number): InstallmentPlan[] {
+  const requiredCount = getRequiredInstallmentCount(totalRupees);
+  const requestedCount = count ?? requiredCount;
+
+  if (requestedCount < requiredCount) {
+    throw new RangeError(
+      `At least ${requiredCount} installments are required for ₹${totalRupees.toLocaleString("en-IN")}.`
+    );
+  }
+
+  return splitAmountEqually(totalRupees, requestedCount).map((amount, index) => ({
+    index,
+    amount,
+  }));
 }
