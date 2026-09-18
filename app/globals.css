@@ -768,3 +768,306 @@ button {
   }
 }
 
+/* FINAL MOBILE POLISH */
+.sp-screen {
+  min-height: 100svh;
+  min-height: 100dvh;
+  padding-top: max(10px, env(safe-area-inset-top));
+  padding-bottom: max(14px, env(safe-area-inset-bottom));
+}
+
+.sp-back {
+  min-height: 42px;
+  padding: 8px 12px 8px 0;
+  margin-bottom: 4px;
+  font-size: 15px;
+}
+
+.sp-section-head {
+  margin-top: 6px;
+  margin-bottom: 18px;
+}
+
+.sp-section-head h1 {
+  font-size: clamp(29px, 8.5vw, 36px);
+  line-height: 1.05;
+}
+
+.sp-bottom-action {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  margin-top: auto;
+  padding: 12px 0 max(3px, env(safe-area-inset-bottom));
+  background: linear-gradient(to bottom, rgba(247,247,245,0), var(--sp-bg) 12px);
+}
+
+.sp-primary,
+.sp-secondary-button,
+.sp-danger-button,
+.sp-ghost-button {
+  min-height: 50px;
+  border-radius: 15px;
+}
+
+.sp-primary {
+  font-size: 16px;
+  box-shadow: 0 1px 0 rgba(0,0,0,.04);
+}
+
+.sp-secondary-button {
+  font-size: 16px;
+}
+
+.sp-home {
+  min-height: 100dvh;
+}
+.sp-home-hero {
+  margin: auto 0;
+  padding: 24px 0;
+}
+.sp-home-hero h1 {
+  max-width: 390px;
+  font-size: clamp(34px, 9.5vw, 42px);
+}
+.sp-home-actions {
+  width: 100%;
+  padding-bottom: 2px;
+}
+.sp-secondary-action {
+  min-height: 46px;
+  margin-top: 4px;
+  font-size: 15px;
+}
+
+.sp-manual {
+  gap: 9px;
+}
+.sp-input {
+  min-height: 50px;
+  border-radius: 14px;
+  font-size: 16px;
+}
+
+.sp-scan .sp-section-head {
+  margin-bottom: 12px;
+}
+.sp-scan .sp-section-head h1 {
+  margin-bottom: 6px;
+}
+.sp-scan .sp-muted {
+  font-size: 14px;
+}
+.sp-scanner {
+  aspect-ratio: 1 / 1;
+  max-height: none;
+  border-radius: 18px;
+  margin-bottom: 10px;
+}
+.sp-scanner #splitpay-qr-region {
+  border-radius: 18px;
+  overflow: hidden;
+}
+.sp-scanner video {
+  height: 100% !important;
+  min-height: 0 !important;
+  object-fit: cover !important;
+}
+
+.sp-amount {
+  justify-content: flex-start;
+}
+.sp-amount-main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 10px 0 8px;
+}
+.sp-amount-main h1 {
+  max-width: 100%;
+  font-size: 22px;
+  line-height: 1.15;
+}
+.sp-amount-value {
+  margin-top: 18px;
+  font-size: clamp(48px, 15vw, 62px);
+}
+.sp-amount-main .sp-muted {
+  margin-top: 10px;
+  font-size: 13px;
+}
+.sp-keypad {
+  flex: 0 0 auto;
+  gap: 7px;
+  margin-bottom: 2px;
+}
+.sp-key {
+  height: clamp(50px, 14vw, 58px);
+  border-radius: 14px;
+  font-size: 21px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.025);
+}
+
+.sp-split .sp-section-head {
+  margin-bottom: 14px;
+}
+.sp-counter {
+  grid-template-columns: 52px 1fr 52px;
+  gap: 10px;
+  margin: 0 0 14px;
+}
+.sp-counter button {
+  width: 52px;
+  height: 52px;
+  border-radius: 15px;
+  font-size: 25px;
+}
+.sp-counter strong {
+  font-size: 32px;
+}
+.sp-installments {
+  border-top: 1px solid var(--sp-line);
+}
+.sp-installment {
+  min-height: 50px;
+  padding: 0 12px;
+}
+.sp-installment strong {
+  font-size: 16px;
+}
+
+.sp-merchant {
+  padding: 14px 0;
+}
+.sp-total-row {
+  padding: 13px 0;
+}
+.sp-queue-row {
+  min-height: 62px;
+  gap: 11px;
+}
+.sp-step {
+  width: 32px;
+  height: 32px;
+  flex-basis: 32px;
+}
+.sp-queue-info strong {
+  font-size: 15px;
+}
+.sp-queue-info span {
+  font-size: 12px;
+}
+.sp-queue-row > strong:last-child {
+  font-size: 15px;
+}
+
+.sp-pay {
+  justify-content: flex-start;
+}
+.sp-pay-main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  margin: 8px 0 12px;
+}
+.sp-pay-main h1 {
+  font-size: clamp(46px, 14vw, 62px);
+}
+.sp-pay-main .sp-eyebrow {
+  margin-bottom: 12px;
+}
+.sp-pay-note {
+  max-width: 310px;
+  margin: 14px auto 0;
+  font-size: 13px;
+}
+.sp-pay-main .sp-warning {
+  margin-top: 14px;
+}
+.sp-pay-actions {
+  flex: 0 0 auto;
+  width: 100%;
+  margin-top: 0;
+  padding-bottom: 0;
+}
+.sp-text-action,
+.sp-danger-action {
+  min-height: 42px;
+  font-size: 14px;
+}
+.sp-attempt {
+  margin-top: 2px;
+}
+
+.sp-complete {
+  padding-top: max(28px, env(safe-area-inset-top));
+}
+.sp-success-icon {
+  width: 68px;
+  height: 68px;
+  margin-bottom: 20px;
+  font-size: 34px;
+}
+.sp-complete h1 {
+  font-size: 34px;
+}
+.sp-complete-total {
+  margin-top: 16px;
+  font-size: 42px;
+}
+.sp-merchant-small {
+  margin-top: 9px;
+  font-size: 13px;
+}
+.sp-complete .sp-bottom-action {
+  width: 100%;
+  margin-top: 28px;
+}
+
+@media (max-width: 360px) {
+  .sp-screen {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  .sp-home-hero {
+    padding: 18px 0;
+  }
+  .sp-home-hero h1 {
+    font-size: 32px;
+  }
+  .sp-section-head h1 {
+    font-size: 29px;
+  }
+  .sp-amount-value {
+    font-size: 46px;
+  }
+  .sp-key {
+    height: 48px;
+  }
+  .sp-counter {
+    grid-template-columns: 48px 1fr 48px;
+  }
+  .sp-counter button {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (min-width: 431px) {
+  .sp-screen {
+    border-left: 1px solid rgba(0,0,0,.03);
+    border-right: 1px solid rgba(0,0,0,.03);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-primary,
+  .sp-secondary-button,
+  .sp-danger-button,
+  .sp-ghost-button {
+    transition: none;
+  }
+}
