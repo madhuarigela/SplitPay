@@ -41,7 +41,6 @@ interface PaymentState {
   activeIndex: number | null;
   scanError: string | null;
 
-  // navigation / setup
   goTo: (screen: Screen) => void;
   setPayeeFromScan: (
     payee: PayeeInfo,
@@ -52,7 +51,6 @@ interface PaymentState {
   setTotalAmount: (amount: number) => void;
   setInstallmentCount: (count: number) => void;
 
-  // payment flow
   startInstallment: (index: number) => string | null;
   markResult: (
     index: number,
@@ -61,7 +59,6 @@ interface PaymentState {
   retryInstallment: (index: number) => string | null;
   reset: () => void;
 
-  // derived
   nextPendingIndex: () => number | null;
   isComplete: () => boolean;
   paidTotal: () => number;
@@ -107,12 +104,15 @@ export const usePaymentStore = create<PaymentState>()(
           screen: "split",
         }),
 
-      setInstallmentCount: (count) => {
+      setInstallmentCount: (_count) => {
         const total = get().totalAmount;
 
         if (total == null) return;
 
-        const safeCount = getRequiredInstallmentCount(total);\n        const plan = buildInstallmentPlan(total, safeCount);
+        // Always use the minimum number of payments required to keep
+        // every installment strictly below ₹2,000 (maximum ₹1,999.99).
+        const safeCount = getRequiredInstallmentCount(total);
+        const plan = buildInstallmentPlan(total, safeCount);
 
         set({
           installments: plan.map((p) => ({
@@ -136,7 +136,6 @@ export const usePaymentStore = create<PaymentState>()(
 
         if (!payee || !inst) return null;
 
-        // Do not start an already-paid installment.
         if (inst.status === "paid") {
           return null;
         }
@@ -178,9 +177,6 @@ export const usePaymentStore = create<PaymentState>()(
             : i
         );
 
-        // Payment failed/cancelled:
-        // keep the user on the payment screen so
-        // the same installment can be retried.
         if (status === "failed") {
           set({
             installments: updated,
@@ -191,8 +187,6 @@ export const usePaymentStore = create<PaymentState>()(
           return;
         }
 
-        // Payment succeeded:
-        // find the next unpaid installment.
         const nextIndex =
           updated.find(
             (i) =>
@@ -200,7 +194,6 @@ export const usePaymentStore = create<PaymentState>()(
               i.status === "failed"
           )?.index ?? null;
 
-        // No unpaid installments remain.
         if (nextIndex === null) {
           set({
             installments: updated,
@@ -211,9 +204,6 @@ export const usePaymentStore = create<PaymentState>()(
           return;
         }
 
-        // Move to the next installment.
-        // Do NOT automatically launch UPI.
-        // Let the user deliberately start the next payment.
         set({
           installments: updated,
           activeIndex: nextIndex,
