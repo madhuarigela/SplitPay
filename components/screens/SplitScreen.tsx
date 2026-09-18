@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
@@ -8,62 +8,113 @@ import { splitAmountEqually } from "@/lib/split";
 const MAX_INSTALLMENTS = 12;
 
 export function SplitScreen() {
-  const total = usePaymentStore((s) => s.totalAmount);
-  const setInstallmentCount = usePaymentStore((s) => s.setInstallmentCount);
-  const goTo = usePaymentStore((s) => s.goTo);
+  const total = usePaymentStore(
+    (s) => s.totalAmount
+  );
+
+  const setInstallmentCount = usePaymentStore(
+    (s) => s.setInstallmentCount
+  );
+
+  const goTo = usePaymentStore(
+    (s) => s.goTo
+  );
+
   const [count, setCount] = useState(2);
 
   if (total == null) return null;
-  const preview = splitAmountEqually(total, count);
+
+  const preview = splitAmountEqually(
+    total,
+    count
+  );
 
   return (
-    <div className="flex min-h-screen flex-col px-6 pb-10 pt-16 safe-top safe-bottom">
-      <button onClick={() => goTo("amount")} className="mb-6 self-start text-[17px] text-brand">
+    <main className="mobile-screen">
+      <button
+        onClick={() => goTo("amount")}
+        className="mobile-back"
+      >
         ‹ Back
       </button>
 
-      <h1 className="mb-1 text-[22px] font-semibold">Split into how many?</h1>
-      <p className="mb-8 text-[15px] text-ink-soft dark:text-ink-onDarkSoft">
-        Total ₹{total.toLocaleString("en-IN")}
-      </p>
+      <div className="split-header">
+        <h1 className="screen-title">
+          Split your payment
+        </h1>
 
-      <div className="mb-8 flex items-center justify-center gap-8">
+        <p className="screen-subtitle">
+          ₹{total.toLocaleString("en-IN")} total
+        </p>
+      </div>
+
+      <div className="split-selector">
         <button
-          onClick={() => setCount((c) => Math.max(2, c - 1))}
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-surface-dim text-[24px] font-medium active:scale-90 dark:bg-white/5"
-          aria-label="Decrease"
+          type="button"
+          onClick={() =>
+            setCount((current) =>
+              Math.max(2, current - 1)
+            )
+          }
+          className="round-control"
+          aria-label="Decrease installments"
         >
           −
         </button>
-        <div className="text-[48px] font-semibold tabular-nums">{count}</div>
+
+        <div className="split-count">
+          {count}
+        </div>
+
         <button
-          onClick={() => setCount((c) => Math.min(MAX_INSTALLMENTS, c + 1))}
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-surface-dim text-[24px] font-medium active:scale-90 dark:bg-white/5"
-          aria-label="Increase"
+          type="button"
+          onClick={() =>
+            setCount((current) =>
+              Math.min(
+                MAX_INSTALLMENTS,
+                current + 1
+              )
+            )
+          }
+          className="round-control"
+          aria-label="Increase installments"
         >
           +
         </button>
       </div>
 
-      <div className="flex-1 space-y-2 overflow-y-auto">
-        {preview.map((amt, i) => (
+      <p className="split-caption">
+        payments
+      </p>
+
+      <div className="split-list">
+        {preview.map((amount, index) => (
           <div
-            key={i}
-            className="flex items-center justify-between rounded-2xl bg-surface-dim px-4 py-3 dark:bg-white/5"
+            key={index}
+            className="split-row"
           >
-            <span className="text-[15px] text-ink-soft dark:text-ink-onDarkSoft">
-              Part {i + 1}
+            <span>
+              Payment {index + 1}
             </span>
-            <span className="text-[17px] font-medium tabular-nums">
-              ₹{amt.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-            </span>
+
+            <strong>
+              ₹
+              {amount.toLocaleString("en-IN", {
+                minimumFractionDigits: 2,
+              })}
+            </strong>
           </div>
         ))}
       </div>
 
-      <div className="mt-6">
-        <Button onClick={() => setInstallmentCount(count)}>Set up queue</Button>
-      </div>
-    </div>
+      <Button
+        onClick={() =>
+          setInstallmentCount(count)
+        }
+        className="mobile-primary-button"
+      >
+        Continue
+      </Button>
+    </main>
   );
 }

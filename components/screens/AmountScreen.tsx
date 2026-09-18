@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
@@ -29,36 +29,56 @@ export function AmountScreen() {
       setError("Enter an amount greater than ₹0.");
       return;
     }
+
     setError(null);
     setTotalAmount(Number(value));
   }
 
   return (
-    <div className="flex min-h-screen flex-col px-6 pb-10 pt-16 safe-top safe-bottom">
-      <button onClick={() => goTo("home")} className="mb-6 self-start text-[17px] text-brand">
+    <main className="mobile-screen">
+      <button
+        onClick={() => goTo("home")}
+        className="mobile-back"
+      >
         ‹ Back
       </button>
 
-      <div className="mb-2 text-center text-[15px] text-ink-soft dark:text-ink-onDarkSoft">
-        Paying {payee?.name ?? payee?.vpa}
-      </div>
-
-      <div className="flex flex-1 flex-col items-center justify-center">
-        <div className="text-[56px] font-semibold tracking-tight">
-          <span className="mr-1 text-ink-soft dark:text-ink-onDarkSoft">₹</span>
-          {value || "0"}
+      <div className="mobile-content">
+        <div className="payee-label">
+          Paying
         </div>
-        {error && <p className="mt-3 text-[14px] text-danger">{error}</p>}
-      </div>
 
-      <Keypad onDigit={onDigit} onBackspace={onBackspace} />
+        <div className="payee-name">
+          {payee?.name ?? payee?.vpa}
+        </div>
 
-      <div className="mt-6">
-        <Button onClick={submit} disabled={!value}>
+        <div className="amount-entry">
+          <div className="amount-value">
+            <span>₹</span>
+            {value || "0"}
+          </div>
+
+          {error && (
+            <p className="error-message">
+              {error}
+            </p>
+          )}
+        </div>
+
+        <Keypad
+          onDigit={onDigit}
+          onBackspace={onBackspace}
+        />
+
+        <Button
+          onClick={submit}
+          disabled={!value}
+          className="mobile-primary-button"
+        >
           Continue
         </Button>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -69,16 +89,27 @@ function Keypad({
   onDigit: (d: string) => void;
   onBackspace: () => void;
 }) {
-  const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "⌫"];
+  const keys = [
+    "1", "2", "3",
+    "4", "5", "6",
+    "7", "8", "9",
+    ".", "0", "⌫",
+  ];
+
   return (
-    <div className="grid grid-cols-3 gap-3">
-      {keys.map((k) => (
+    <div className="mobile-keypad">
+      {keys.map((key) => (
         <button
-          key={k}
-          onClick={() => (k === "⌫" ? onBackspace() : onDigit(k))}
-          className="rounded-2xl bg-surface-dim py-4 text-[24px] font-medium transition-transform active:scale-95 dark:bg-white/5"
+          key={key}
+          type="button"
+          onClick={() =>
+            key === "⌫"
+              ? onBackspace()
+              : onDigit(key)
+          }
+          className="keypad-key"
         >
-          {k}
+          {key}
         </button>
       ))}
     </div>

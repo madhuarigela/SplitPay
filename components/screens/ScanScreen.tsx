@@ -12,7 +12,8 @@ export function ScanScreen() {
     (s) => s.setPayeeFromScan
   );
 
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] =
+    useState<string | null>(null);
 
   const handleDecoded = useCallback(
     (raw: string) => {
@@ -38,7 +39,7 @@ export function ScanScreen() {
           );
         } else {
           setError(
-            "Couldn't read that code. Try again or enter the UPI ID manually."
+            "Couldn't read that QR. Try again or enter the UPI ID manually."
           );
         }
       }
@@ -54,41 +55,46 @@ export function ScanScreen() {
   );
 
   return (
-    <div className="flex min-h-screen flex-col px-6 pb-10 pt-16 safe-top safe-bottom">
+    <main className="mobile-screen scan-screen">
       <button
         onClick={() => goTo("home")}
-        className="mb-6 self-start text-[17px] text-brand"
+        className="mobile-back"
       >
         ‹ Back
       </button>
 
-      <h1 className="mb-1 text-[22px] font-semibold">
-        Scan to pay
-      </h1>
+      <div className="scan-header">
+        <h1 className="screen-title">
+          Scan to pay
+        </h1>
 
-      <p className="mb-6 text-[15px] text-ink-soft dark:text-ink-onDarkSoft">
-        Point the camera at the merchant's UPI QR code.
-      </p>
+        <p className="screen-subtitle">
+          Point your camera at the merchant's UPI QR.
+        </p>
+      </div>
 
-      <QrScanner
-        onDecoded={handleDecoded}
-        onError={handleError}
-      />
+      <div className="scanner-container">
+        <QrScanner
+          onDecoded={handleDecoded}
+          onError={handleError}
+        />
+      </div>
 
       {error && (
-        <div className="mt-6 animate-sheet-in rounded-2xl bg-danger/10 p-4 text-[14px] text-danger">
+        <div className="error-panel animate-sheet-in">
           {error}
         </div>
       )}
 
-      <div className="mt-auto pt-8">
+      <div className="scan-bottom">
         <Button
           variant="secondary"
           onClick={() => goTo("home")}
+          className="mobile-secondary-button"
         >
           Enter UPI ID instead
         </Button>
       </div>
-    </div>
+    </main>
   );
 }

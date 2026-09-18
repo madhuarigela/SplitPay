@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Button } from "@/components/ui/Button";
 import { usePaymentStore } from "@/store/usePaymentStore";
@@ -7,7 +7,7 @@ const statusLabel: Record<string, string> = {
   pending: "Not paid",
   in_progress: "In progress",
   paid: "Paid",
-  failed: "Failed — retry",
+  failed: "Payment failed — retry",
 };
 
 const statusColor: Record<string, string> = {
@@ -19,58 +19,121 @@ const statusColor: Record<string, string> = {
 
 export function ReviewScreen() {
   const payee = usePaymentStore((s) => s.payee);
-  const installments = usePaymentStore((s) => s.installments);
+  const installments = usePaymentStore(
+    (s) => s.installments
+  );
   const goTo = usePaymentStore((s) => s.goTo);
-  const nextPendingIndex = usePaymentStore((s) => s.nextPendingIndex);
-  const startInstallment = usePaymentStore((s) => s.startInstallment);
-  const paidTotal = usePaymentStore((s) => s.paidTotal);
+  const nextPendingIndex = usePaymentStore(
+    (s) => s.nextPendingIndex
+  );
+  const startInstallment = usePaymentStore(
+    (s) => s.startInstallment
+  );
+  const paidTotal = usePaymentStore(
+    (s) => s.paidTotal
+  );
 
   function payNext() {
-    const idx = nextPendingIndex();
-    if (idx == null) return;
-    const link = startInstallment(idx);
-    if (link) window.location.href = link;
+    const index = nextPendingIndex();
+
+    if (index == null) return;
+
+    const link = startInstallment(index);
+
+    if (link) {
+      window.location.href = link;
+    }
   }
 
   const next = nextPendingIndex();
-  const total = installments.reduce((s, i) => s + i.amount, 0);
+
+  const total = installments.reduce(
+    (sum, item) => sum + item.amount,
+    0
+  );
 
   return (
-    <div className="flex min-h-screen flex-col px-6 pb-10 pt-16 safe-top safe-bottom">
-      <button onClick={() => goTo("split")} className="mb-6 self-start text-[17px] text-brand">
+    <main className="mobile-screen">
+      <button
+        onClick={() => goTo("split")}
+        className="mobile-back"
+      >
         ‹ Back
       </button>
 
-      <h1 className="mb-1 text-[22px] font-semibold">Payment queue</h1>
-      <p className="mb-6 text-[15px] text-ink-soft dark:text-ink-onDarkSoft">
-        Paying {payee?.name ?? payee?.vpa} · ₹{paidTotal().toLocaleString("en-IN")} of{" "}
-        ₹{total.toLocaleString("en-IN")} paid
-      </p>
+      <div className="review-header">
+        <div className="eyebrow">
+          Ready to pay
+        </div>
 
-      <div className="flex-1 space-y-2 overflow-y-auto">
+        <h1 className="screen-title">
+          Payment plan
+        </h1>
+
+        <p className="screen-subtitle">
+          {payee?.name ?? payee?.vpa}
+        </p>
+      </div>
+
+      <div className="review-summary">
+        <span>Total</span>
+
+        <strong>
+          ₹{total.toLocaleString("en-IN")}
+        </strong>
+      </div>
+
+      <div className="review-progress">
+        ₹{paidTotal().toLocaleString("en-IN")} paid
+        <span>of ₹{total.toLocaleString("en-IN")}</span>
+      </div>
+
+      <div className="payment-list">
         {installments.map((inst) => (
           <div
             key={inst.index}
-            className="flex items-center justify-between rounded-2xl bg-surface-dim px-4 py-3 dark:bg-white/5"
+            className="payment-row"
           >
-            <div>
-              <div className="text-[17px] font-medium">Part {inst.index + 1}</div>
-              <div className={`text-[13px] ${statusColor[inst.status]}`}>
-                {statusLabel[inst.status]}
+            <div className="payment-row-left">
+              <div className="payment-number">
+                {inst.index + 1}
+              </div>
+
+              <div>
+                <div className="payment-row-title">
+                  Payment {inst.index + 1}
+                </div>
+
+                <div
+                  className={`payment-row-status ${statusColor[inst.status]}`}
+                >
+                  {statusLabel[inst.status]}
+                </div>
               </div>
             </div>
-            <span className="text-[17px] font-medium tabular-nums">
-              ₹{inst.amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-            </span>
+
+            <strong className="payment-row-amount">
+              ₹
+              {inst.amount.toLocaleString(
+                "en-IN",
+                {
+                  minimumFractionDigits: 2,
+                }
+              )}
+            </strong>
           </div>
         ))}
       </div>
 
-      <div className="mt-6">
-        <Button onClick={payNext} disabled={next == null}>
-          {next == null ? "All parts paid" : `Pay part ${next + 1}`}
-        </Button>
-      </div>
-    </div>
+      <Button
+        onClick={payNext}
+        disabled={next == null}
+        className="mobile-primary-button"
+      >
+        {next == null
+          ? "All payments complete"
+          : `Pay payment ${next + 1}`}
+      </Button>
+    </main>
   );
 }

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
@@ -12,17 +12,11 @@ export function PayScreen() {
   const activeIndex = usePaymentStore((s) => s.activeIndex);
   const installments = usePaymentStore((s) => s.installments);
   const payee = usePaymentStore((s) => s.payee);
-
   const markResult = usePaymentStore((s) => s.markResult);
-  const retryInstallment = usePaymentStore(
-    (s) => s.retryInstallment
-  );
+  const retryInstallment = usePaymentStore((s) => s.retryInstallment);
   const goTo = usePaymentStore((s) => s.goTo);
 
-  const inst = installments.find(
-    (i) => i.index === activeIndex
-  );
-
+  const inst = installments.find((i) => i.index === activeIndex);
   const [desktopWarning, setDesktopWarning] = useState(false);
 
   useEffect(() => {
@@ -31,20 +25,19 @@ export function PayScreen() {
 
   if (!inst || !payee) {
     return (
-      <div className="flex min-h-screen items-center justify-center px-6">
+      <main className="mobile-screen center-screen">
         <Button onClick={() => goTo("review")}>
-          Back to queue
+          Back to payment plan
         </Button>
-      </div>
+      </main>
     );
   }
 
-  const canRetry = inst.attempts < MAX_ATTEMPTS;
+  const current = inst;
+  const canRetry = current.attempts < MAX_ATTEMPTS;
 
   function reopenApp() {
-    if (!inst || !canRetry) return;
-
-    const link = retryInstallment(inst.index);
+    const link = retryInstallment(current.index);
 
     if (link) {
       window.location.href = link;
@@ -52,70 +45,77 @@ export function PayScreen() {
   }
 
   function confirmPaid() {
-    if (!inst) return;
-
-    markResult(inst.index, "paid");
+    markResult(current.index, "paid");
   }
 
   function confirmFailed() {
-    if (!inst) return;
-
-    markResult(inst.index, "failed");
+    markResult(current.index, "failed");
   }
 
   return (
-    <div className="flex min-h-screen flex-col px-6 pb-10 pt-16 safe-top safe-bottom">
-      <div className="flex flex-1 flex-col items-center justify-center">
+    <main className="mobile-screen payment-screen">
+      <button
+        type="button"
+        onClick={() => goTo("review")}
+        className="mobile-back"
+      >
+        ‹ Payment plan
+      </button>
+
+      <div className="payment-content">
+        <div className="payment-step">
+          Payment {current.index + 1} of {installments.length}
+        </div>
+
         <AmountDisplay
-          rupees={inst.amount}
-          label={`Part ${inst.index + 1} to ${
-            payee.name ?? payee.vpa
-          }`}
+          rupees={current.amount}
+          label={payee.name ?? payee.vpa}
         />
 
-        {desktopWarning && (
-          <div className="mt-6 max-w-xs animate-sheet-in rounded-2xl bg-warn/10 p-4 text-center text-[14px] text-warn">
-            This device may not open UPI apps directly.
-            Use a phone with a UPI app installed.
+        {desktopWarning ? (
+          <div className="warning-panel">
+            This device may not open UPI apps directly. Use a phone with a
+            UPI app installed.
           </div>
-        )}
-
-        {!desktopWarning && (
-          <p className="mt-6 max-w-xs text-center text-[15px] text-ink-soft dark:text-ink-onDarkSoft">
-            Complete this payment in your UPI app, then
-            return here and confirm the result.
+        ) : (
+          <p className="payment-instruction">
+            Open your UPI app and complete this payment. Return here when
+            finished.
           </p>
         )}
-      </div>
-
-      <div className="space-y-3">
-        <Button onClick={confirmPaid}>
-          I've paid this part
-        </Button>
 
         <Button
-          variant="secondary"
           onClick={reopenApp}
           disabled={!canRetry}
+          className="mobile-primary-button payment-button"
         >
           {canRetry
-            ? "Open UPI app again"
+            ? `Pay ₹${current.amount.toLocaleString("en-IN")}`
             : "No attempts left"}
         </Button>
 
-        <Button
-          variant="destructive"
+        <button
+          type="button"
+          onClick={confirmPaid}
+          className="payment-confirm-link"
+        >
+          I've paid this part
+        </button>
+
+        <button
+          type="button"
           onClick={confirmFailed}
+          className="payment-failed-link"
         >
           Payment didn't go through
-        </Button>
+        </button>
 
-        {inst.attempts > 0 && (
-          <p className="text-center text-[13px] text-ink-faint">
-            Attempt {inst.attempts} of {MAX_ATTEMPTS}
+        {current.attempts > 0 && (
+          <p className="attempt-note">
+            Attempt {current.attempts} of {MAX_ATTEMPTS}
           </p>
         )}
       </div>
-    </div>
+    </main>
   );
 }

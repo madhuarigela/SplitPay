@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
@@ -7,18 +7,21 @@ import { isValidVpa } from "@/lib/upi";
 
 export function HomeScreen() {
   const goTo = usePaymentStore((s) => s.goTo);
-  const setPayeeManual = usePaymentStore((s) => s.setPayeeManual);
+  const setPayeeManual = usePaymentStore(
+    (s) => s.setPayeeManual
+  );
 
   const [manualOpen, setManualOpen] = useState(false);
   const [vpaInput, setVpaInput] = useState("");
-  const [vpaError, setVpaError] = useState<string | null>(null);
+  const [vpaError, setVpaError] =
+    useState<string | null>(null);
 
   function submitManualVpa() {
     const trimmed = vpaInput.trim();
 
     if (!isValidVpa(trimmed)) {
       setVpaError(
-        "That doesn't look like a valid UPI ID (e.g. name@bank)."
+        "That doesn't look like a valid UPI ID."
       );
       return;
     }
@@ -28,69 +31,84 @@ export function HomeScreen() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col px-6 pb-10 pt-16 safe-top safe-bottom">
-      <div className="flex-1 flex flex-col items-center justify-center text-center">
-        <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand text-2xl font-bold text-brand-onBrand shadow-soft">
+    <main className="mobile-screen home-screen">
+      <div className="home-center">
+        <div className="brand-logo">
           S
         </div>
 
-        <h1 className="text-[28px] font-semibold tracking-tight">
+        <h1 className="brand-title">
           SplitPay
         </h1>
 
-        <p className="mt-2 max-w-xs text-[15px] leading-relaxed text-ink-soft dark:text-ink-onDarkSoft">
-          Pay any UPI bill in installments you set. Scan, split, and pay each part when you're
-          ready.
+        <p className="brand-subtitle">
+          Pay any UPI bill in simple installments.
+          Scan, split, and pay.
         </p>
       </div>
 
-      <div className="space-y-3">
+      <div className="home-actions">
         {!manualOpen ? (
           <>
-            <Button onClick={() => goTo("scan")}>
+            <Button
+              onClick={() => goTo("scan")}
+              className="mobile-primary-button"
+            >
               Scan QR
+              <span className="button-arrow">
+                →
+              </span>
             </Button>
 
-            <Button
-              variant="secondary"
+            <button
+              type="button"
               onClick={() => setManualOpen(true)}
+              className="mobile-text-action"
             >
-              Enter UPI ID
-            </Button>
+              Enter UPI ID manually
+            </button>
           </>
         ) : (
-          <div className="animate-sheet-in space-y-3">
+          <div className="manual-panel animate-sheet-in">
             <input
               autoFocus
               inputMode="email"
+              autoComplete="off"
               placeholder="name@bank"
               value={vpaInput}
-              onChange={(e) => {
-                setVpaInput(e.target.value);
+              onChange={(event) => {
+                setVpaInput(event.target.value);
                 setVpaError(null);
               }}
-              className="w-full rounded-2xl border border-line bg-surface-dim px-4 py-4 text-[17px] outline-none dark:border-line-dark dark:bg-white/5"
+              className="mobile-input"
             />
 
             {vpaError && (
-              <p className="px-1 text-[13px] text-danger">
+              <p className="error-message">
                 {vpaError}
               </p>
             )}
 
-            <Button onClick={submitManualVpa}>
+            <Button
+              onClick={submitManualVpa}
+              className="mobile-primary-button"
+            >
               Continue
             </Button>
 
-            <Button
-              variant="ghost"
-              onClick={() => setManualOpen(false)}
+            <button
+              type="button"
+              onClick={() => {
+                setManualOpen(false);
+                setVpaError(null);
+              }}
+              className="mobile-text-action"
             >
               Cancel
-            </Button>
+            </button>
           </div>
         )}
       </div>
-    </div>
+    </main>
   );
 }
