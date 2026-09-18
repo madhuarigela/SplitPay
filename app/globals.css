@@ -1171,3 +1171,69 @@ body { background: var(--sp-bg); color: var(--sp-text); }
   .sp-amount-value{margin-top:14px;font-size:46px}
   .sp-key{height:48px}
 }
+
+/* Refined iOS payment-plan components */
+.sp-plan-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  overflow: hidden;
+  margin: 2px 0 14px;
+  border-radius: 14px;
+  background: var(--sp-line);
+  box-shadow: 0 0 0 1px var(--sp-line);
+}
+.sp-plan-summary > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px 15px;
+  background: #fff;
+}
+.sp-plan-summary span {
+  color: var(--sp-secondary);
+  font-size: 12px;
+}
+.sp-plan-summary strong {
+  color: var(--sp-text);
+  font-size: 20px;
+  letter-spacing: -.02em;
+}
+.sp-installment-leading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.sp-installment-leading > span:last-child {
+  color: var(--sp-text);
+  font-size: 15px;
+}
+.sp-installment-number {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e5e5ea;
+  color: #636366;
+  font-size: 12px;
+  font-weight: 600;
+}
+.sp-limit-note {
+  margin: 10px 2px 0;
+  color: var(--sp-tertiary);
+  text-align: center;
+  font-size: 12px;
+}
+.sp-split .sp-installments {
+  max-height: min(48dvh, 430px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+@media (max-width:360px) {
+  .sp-plan-summary > div { padding: 12px; }
+  .sp-plan-summary strong { font-size: 18px; }
+  .sp-installment-leading > span:last-child { font-size: 14px; }
+}
