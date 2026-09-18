@@ -7,21 +7,18 @@ import { isValidVpa } from "@/lib/upi";
 
 export function HomeScreen() {
   const goTo = usePaymentStore((s) => s.goTo);
-  const setPayeeManual = usePaymentStore(
-    (s) => s.setPayeeManual
-  );
+  const setPayeeManual = usePaymentStore((s) => s.setPayeeManual);
 
   const [manualOpen, setManualOpen] = useState(false);
   const [vpaInput, setVpaInput] = useState("");
-  const [vpaError, setVpaError] =
-    useState<string | null>(null);
+  const [vpaError, setVpaError] = useState<string | null>(null);
 
   function submitManualVpa() {
     const trimmed = vpaInput.trim();
 
     if (!isValidVpa(trimmed)) {
       setVpaError(
-        "That doesn't look like a valid UPI ID."
+        "That doesn't look like a valid UPI ID (e.g. name@bank)."
       );
       return;
     }
@@ -31,78 +28,75 @@ export function HomeScreen() {
   }
 
   return (
-    <main className="mobile-screen home-screen">
-      <div className="home-center">
-        <div className="brand-logo">
-          S
-        </div>
-
-        <h1 className="brand-title">
-          SplitPay
-        </h1>
-
-        <p className="brand-subtitle">
-          Pay any UPI bill in simple installments.
-          Scan, split, and pay.
-        </p>
+    <main className="sp-screen sp-home">
+      <div className="sp-brand">
+        <div className="sp-logo">S</div>
+        <span>SplitPay</span>
       </div>
 
-      <div className="home-actions">
+      <section className="sp-home-hero">
+        <p className="sp-eyebrow">UPI payments, split simply</p>
+
+        <h1>Split one payment into smaller payments.</h1>
+
+        <p className="sp-muted">
+          Scan a UPI QR, choose how many parts you want, and pay them one at a
+          time.
+        </p>
+      </section>
+
+      <div className="sp-home-actions">
         {!manualOpen ? (
           <>
             <Button
               onClick={() => goTo("scan")}
-              className="mobile-primary-button"
+              className="sp-primary"
             >
               Scan QR
-              <span className="button-arrow">
-                →
-              </span>
             </Button>
 
             <button
               type="button"
+              className="sp-secondary-action"
               onClick={() => setManualOpen(true)}
-              className="mobile-text-action"
             >
               Enter UPI ID manually
             </button>
           </>
         ) : (
-          <div className="manual-panel animate-sheet-in">
+          <div className="sp-manual">
             <input
               autoFocus
               inputMode="email"
               autoComplete="off"
               placeholder="name@bank"
               value={vpaInput}
-              onChange={(event) => {
-                setVpaInput(event.target.value);
+              onChange={(e) => {
+                setVpaInput(e.target.value);
                 setVpaError(null);
               }}
-              className="mobile-input"
+              className="sp-input"
+              aria-label="UPI ID"
             />
 
             {vpaError && (
-              <p className="error-message">
-                {vpaError}
-              </p>
+              <p className="sp-warning">{vpaError}</p>
             )}
 
             <Button
               onClick={submitManualVpa}
-              className="mobile-primary-button"
+              className="sp-primary"
             >
               Continue
             </Button>
 
             <button
               type="button"
+              className="sp-secondary-action"
               onClick={() => {
                 setManualOpen(false);
                 setVpaError(null);
               }}
-              className="mobile-text-action"
             >
               Cancel
             </button>
