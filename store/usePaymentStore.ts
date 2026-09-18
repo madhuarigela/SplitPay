@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -261,11 +261,11 @@ export const usePaymentStore = create<PaymentState>()(
       name: "splitpay-session",
 
       partialize: (s) => ({
-        screen: s.screen,
-        payee: s.payee,
-        totalAmount: s.totalAmount,
-        installments: s.installments,
-        activeIndex: s.activeIndex,
+        screen: s.screen === "pay" ? "pay" : "home",
+        payee: s.screen === "pay" ? s.payee : null,
+        totalAmount: s.screen === "pay" ? s.totalAmount : null,
+        installments: s.screen === "pay" ? s.installments : [],
+        activeIndex: s.screen === "pay" ? s.activeIndex : null,
       }),
     }
   )
