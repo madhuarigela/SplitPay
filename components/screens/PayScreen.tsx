@@ -14,7 +14,9 @@ export function PayScreen() {
   const payee = usePaymentStore((s) => s.payee);
 
   const markResult = usePaymentStore((s) => s.markResult);
-  const retryInstallment = usePaymentStore((s) => s.retryInstallment);
+  const retryInstallment = usePaymentStore(
+    (s) => s.retryInstallment
+  );
   const goTo = usePaymentStore((s) => s.goTo);
 
   const inst = installments.find(
@@ -40,7 +42,7 @@ export function PayScreen() {
   const canRetry = inst.attempts < MAX_ATTEMPTS;
 
   function reopenApp() {
-    if (!canRetry) return;
+    if (!inst || !canRetry) return;
 
     const link = retryInstallment(inst.index);
 
@@ -50,10 +52,14 @@ export function PayScreen() {
   }
 
   function confirmPaid() {
+    if (!inst) return;
+
     markResult(inst.index, "paid");
   }
 
   function confirmFailed() {
+    if (!inst) return;
+
     markResult(inst.index, "failed");
   }
 
