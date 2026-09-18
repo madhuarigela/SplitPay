@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
@@ -29,54 +29,29 @@ export function AmountScreen() {
       setError("Enter an amount greater than ₹0.");
       return;
     }
-
     setError(null);
     setTotalAmount(Number(value));
   }
 
   return (
-    <main className="mobile-screen">
-      <button
-        onClick={() => goTo("home")}
-        className="mobile-back"
-      >
+    <main className="sp-screen sp-amount">
+      <button type="button" onClick={() => goTo("home")} className="sp-back">
         ‹ Back
       </button>
 
-      <div className="mobile-content">
-        <div className="payee-label">
-          Paying
+      <section className="sp-amount-main">
+        <p className="sp-eyebrow">Paying</p>
+        <h1>{payee?.name ?? payee?.vpa}</h1>
+        <div className="sp-amount-value">
+          <span>₹</span>{value || "0"}
         </div>
+        {error && <p className="sp-warning">{error}</p>}
+      </section>
 
-        <div className="payee-name">
-          {payee?.name ?? payee?.vpa}
-        </div>
+      <Keypad onDigit={onDigit} onBackspace={onBackspace} />
 
-        <div className="amount-entry">
-          <div className="amount-value">
-            <span>₹</span>
-            {value || "0"}
-          </div>
-
-          {error && (
-            <p className="error-message">
-              {error}
-            </p>
-          )}
-        </div>
-
-        <Keypad
-          onDigit={onDigit}
-          onBackspace={onBackspace}
-        />
-
-        <Button
-          onClick={submit}
-          disabled={!value}
-          className="mobile-primary-button"
-        >
-          Continue
-        </Button>
+      <div className="sp-bottom-action">
+        <Button onClick={submit} disabled={!value}>Continue</Button>
       </div>
     </main>
   );
@@ -89,25 +64,17 @@ function Keypad({
   onDigit: (d: string) => void;
   onBackspace: () => void;
 }) {
-  const keys = [
-    "1", "2", "3",
-    "4", "5", "6",
-    "7", "8", "9",
-    ".", "0", "⌫",
-  ];
+  const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "⌫"];
 
   return (
-    <div className="mobile-keypad">
+    <div className="sp-keypad">
       {keys.map((key) => (
         <button
           key={key}
           type="button"
-          onClick={() =>
-            key === "⌫"
-              ? onBackspace()
-              : onDigit(key)
-          }
-          className="keypad-key"
+          className="sp-key"
+          onClick={() => (key === "⌫" ? onBackspace() : onDigit(key))}
+          aria-label={key === "⌫" ? "Delete" : key}
         >
           {key}
         </button>
