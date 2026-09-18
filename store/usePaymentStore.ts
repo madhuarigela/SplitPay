@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { buildInstallmentPlan } from "@/lib/split";
+import { buildInstallmentPlan, getRequiredInstallmentCount } from "@/lib/split";
 import { buildUpiLink } from "@/lib/upi";
 
 export type Screen =
@@ -112,7 +112,7 @@ export const usePaymentStore = create<PaymentState>()(
 
         if (total == null) return;
 
-        const plan = buildInstallmentPlan(total, count);
+        const safeCount = getRequiredInstallmentCount(total);\n        const plan = buildInstallmentPlan(total, safeCount);
 
         set({
           installments: plan.map((p) => ({
